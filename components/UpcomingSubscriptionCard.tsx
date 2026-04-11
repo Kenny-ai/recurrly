@@ -22,10 +22,10 @@ const UpcomingSubscriptionCard = ({
             {daysLeft > 1
               ? `${daysLeft} days left`
               : daysLeft === 1
-              ? `Last day`
-              : daysLeft === 0
-              ? `Due today`
-              : `Overdue`}
+                ? `Last day`
+                : daysLeft === 0
+                  ? `Due today`
+                  : `Overdue`}
           </Text>
         </View>
       </View>
