@@ -3,6 +3,8 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 
+void SplashScreen.preventAutoHideAsync();
+
 /** Prefer home (tabs) over `(auth)` on native cold start — see app/index.tsx */
 export const unstable_settings = {
   initialRouteName: "index",
@@ -20,7 +22,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
+      void SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
