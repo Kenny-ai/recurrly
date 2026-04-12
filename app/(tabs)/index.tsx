@@ -4,13 +4,14 @@ import UpcomingSubscriptionCard from "@/components/UpcomingSubscriptionCard";
 import {
   HOME_BALANCE,
   HOME_SUBSCRIPTIONS,
-  HOME_USER,
   UPCOMING_SUBSCRIPTIONS,
 } from "@/constants/data";
 import { icons } from "@/constants/icons";
 import images from "@/constants/images";
 import "@/global.css";
+import { getUserDisplayName, getUserEmail } from "@/lib/auth";
 import { formatCurrency } from "@/lib/utils";
+import { useUser } from "@clerk/expo";
 import dayjs from "dayjs";
 import { styled } from "nativewind";
 import { useState } from "react";
@@ -20,9 +21,14 @@ import { SafeAreaView as RNSafeAreaView } from "react-native-safe-area-context";
 const SafeAreaView = styled(RNSafeAreaView);
 
 export default function App() {
+  const { user } = useUser();
   const [expandedSubscriptionId, setExpandedSubscriptionId] = useState<
     string | null
   >(null);
+
+  const displayName = getUserDisplayName(user);
+  const emailAddress = getUserEmail(user);
+  const avatarSource = user?.imageUrl ? { uri: user.imageUrl } : images.avatar;
 
   return (
     <SafeAreaView className="flex-1 bg-background p-5">
@@ -31,8 +37,18 @@ export default function App() {
           <>
             <View className="home-header">
               <View className="home-user">
-                <Image source={images.avatar} className="home-avatar" />
-                <Text className="home-user-name">{HOME_USER.name}</Text>
+                <Image source={avatarSource} className="home-avatar" />
+                <View className="ml-4 max-w-55">
+                  <Text className="home-user-name" numberOfLines={1}>
+                    {displayName}
+                  </Text>
+                  <Text
+                    className="text-sm font-sans-semibold text-muted-foreground"
+                    numberOfLines={1}
+                  >
+                    {emailAddress ?? "Your recurring spend, all in one view"}
+                  </Text>
+                </View>
               </View>
 
               <Image source={icons.add} className="home-add-icon" />
@@ -82,7 +98,7 @@ export default function App() {
             expanded={expandedSubscriptionId === item.id}
             onPress={() =>
               setExpandedSubscriptionId((currentId) =>
-                currentId === item.id ? null : item.id
+                currentId === item.id ? null : item.id,
               )
             }
           />

@@ -1,9 +1,17 @@
 import "@/global.css";
+import { ClerkProvider } from "@clerk/expo";
+import { tokenCache } from "@clerk/expo/token-cache";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 
 void SplashScreen.preventAutoHideAsync();
+
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+if (!publishableKey) {
+  throw new Error("Add your Clerk Publishable Key to .env.local.");
+}
 
 /** Prefer home (tabs) over `(auth)` on native cold start — see app/index.tsx */
 export const unstable_settings = {
@@ -28,5 +36,12 @@ export default function RootLayout() {
 
   if (!fontsLoaded) return null;
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <ClerkProvider
+      publishableKey={publishableKey as string}
+      tokenCache={tokenCache}
+    >
+      <Stack screenOptions={{ headerShown: false }} />
+    </ClerkProvider>
+  );
 }
