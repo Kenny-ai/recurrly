@@ -27,13 +27,19 @@ const AuthButton = ({
     ? "auth-button-text"
     : "auth-secondary-button-text";
 
+  const handlePress = () => {
+    Promise.resolve()
+      .then(onPress)
+      .catch((error) => {
+        console.error("Auth button action failed", error);
+      });
+  };
+
   return (
     <Pressable
       className={buttonClassName}
       disabled={disabled || loading}
-      onPress={() => {
-        void onPress();
-      }}
+      onPress={handlePress}
     >
       {loading ? (
         <ActivityIndicator color={isPrimary ? colors.primary : colors.accent} />

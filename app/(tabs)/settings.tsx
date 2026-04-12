@@ -20,6 +20,7 @@ const Settings = () => {
   const { signOut } = useClerk();
   const { isLoaded, user } = useUser();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
 
   if (!isLoaded) {
     return (
@@ -37,8 +38,15 @@ const Settings = () => {
   const handleSignOut = async () => {
     try {
       setIsSigningOut(true);
+      setSignOutError(null);
       await signOut();
       router.replace(AUTH_SIGN_IN_ROUTE);
+    } catch (error) {
+      setSignOutError(
+        error instanceof Error && error.message
+          ? error.message
+          : "We couldn't sign you out right now. Please try again.",
+      );
     } finally {
       setIsSigningOut(false);
     }
@@ -118,6 +126,14 @@ const Settings = () => {
               onPress={handleSignOut}
             />
           </View>
+
+          {signOutError ? (
+            <View className="mt-4 rounded-2xl bg-destructive/10 p-3">
+              <Text className="text-sm font-sans-semibold text-destructive">
+                {signOutError}
+              </Text>
+            </View>
+          ) : null}
         </View>
       </View>
     </SafeAreaView>

@@ -163,7 +163,8 @@ export async function navigateAfterAuth(
 ) {
   const url = decorateUrl(String(destination));
 
-  if (url.startsWith("http")) {
+  const isAbsoluteUrl = /^[a-z][a-z\d+\-.]*:/i.test(url);
+  if (isAbsoluteUrl) {
     if (Platform.OS === "web" && typeof globalThis.window !== "undefined") {
       globalThis.window.location.href = url;
       return;
